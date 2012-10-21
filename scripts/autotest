@@ -1,0 +1,14 @@
+#! /usr/bin/env perl
+# ABSTRACT: run Perl5 test programs as soon as they are modified or created
+# PODNAME: autotest
+
+use strict;
+use warnings;
+
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
+
+use App::autotest;
+
+my $app = App::autotest->new();
+exit( $app->run ? 0 : 1 );
