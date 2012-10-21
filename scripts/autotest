@@ -11,4 +11,28 @@ use lib "$Bin/../lib";
 use App::autotest;
 
 my $app = App::autotest->new();
-exit( $app->run ? 0 : 1 );
+exit( $app->run ? 0 : 1 
+
+=head1 SYNOPSIS
+
+    autotest
+
+=head1 DESCRIPTION
+
+C<autotest> is a program that runs your test programs whenever you
+change them. Using it you don't have to switch between your editor
+and the shell since your tests are run automatically when you save
+them. Think "Continuous Testing".
+
+=head1 AUTHOR
+
+Gregor Goldbach <glauschwuffel@nomaden.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Gregor Goldbach.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
