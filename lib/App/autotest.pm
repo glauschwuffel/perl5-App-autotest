@@ -39,12 +39,12 @@ sub run {
 sub run_tests_upon_startup {
   my ($self) = @_;
 
-  my @all_test_programs = $self->all_test_programs($self->test_directory);
+  my $all_test_programs = $self->all_test_programs($self->test_directory);
+
   # do we have test programs at all?
-  return 1 unless @all_test_programs;
+  return 1 unless @$all_test_programs;
 
-  $self->harness->runtests(@all_test_programs);
-
+  my $result=$self->harness->runtests($all_test_programs);
   return 1;
 }
 
@@ -57,18 +57,6 @@ sub run_tests_upon_change_or_creation {
   };
   return 1;
 }
-
-{
-  my @files;
-
-sub all_test_programs {
-  my ($self, $directory)=@_;
-
-  @files=(); # throw away result of last call
-  find({wanted => \&_wanted, no_chdir => 1}, $directory);
-
-  return \@files;
-};
 
 sub changed_and_new_files {
   my ($self)=@_;
@@ -83,8 +71,22 @@ sub changed_and_new_files {
   return \@files;
 };
 
+{
+  my @files;
+
+sub all_test_programs {
+  my ($self, $directory)=@_;
+
+  die 'missing directory' unless $directory;
+
+  @files=(); # throw away result of last call
+  find({wanted => \&_wanted, no_chdir => 1}, $directory);
+
+  return \@files;
+};
+
 sub _wanted {
-    my $cwd=getcwd();
+  my $cwd=getcwd();
   my $name=$File::Find::name;
   push @files, File::Spec->catfile($cwd, $name) if $name =~ m{\.t$};
 }
