@@ -1,20 +1,12 @@
 use Test::Spec;
-use App::autotest;
-use TAP::Harness;
-use Cwd;
 use File::Spec;
-use Test::Differences;
-
-use constant TEST_PROGRAMS_DIRECTORY => 't/t';
-use constant SOME_TEST_PROGRAMS => ();
+use File::Basename qw(dirname);
+ 
+BEGIN { require File::Spec->catfile(dirname(__FILE__), 'spec_helper.pl') }
 
 describe 'the autotest' => sub {
   my $autotest = an_autotest();
   my $harness = a_harness();
-
-  it 'should have a default TAP harness' => sub {
-    isa_ok $autotest->harness, 'TAP::Harness';
-  };
 
 # The following test fails with:
 #   Failed test 'the autotest should run all the tests upon startup' by dying:
@@ -27,15 +19,24 @@ describe 'the autotest' => sub {
 #    ok $autotest->run_tests_upon_startup;
 #  };  
 
+  it 'should run all test programs upon startup' => sub {
+    $autotest->stubs(all_test_programs => SOME_TEST_PROGRAMS);
+    $autotest->stubs(test_programs_run => SOME_TEST_PROGRAMS);
+    $harness->expects('runtests');
+    $autotest->harness($harness);
+    ok $autotest->run_tests_upon_startup;
+    is $autotest->number_of_test_programs, $autotest->number_of_test_programs_run;
+  };
+
   it 'should run tests upon change or creation' => sub {
     $autotest = an_autotest_that_just_checks_once_for_changed_or_new_files();
     $harness->expects('runtests');
     $autotest->harness($harness);
-    $autotest->expects('changed_and_new_files');
+    $autotest->expects('changed_and_new_files')->returns(SOME_TEST_PROGRAMS);
     ok $autotest->run_tests_upon_change_or_creation;
   };
 
-  it 'should run all the tests upon startup and change' => sub {
+  it 'should run all the tests upon startup and change and creation' => sub {
     $autotest = an_autotest_that_just_checks_once_for_changed_or_new_files();
     $autotest->expects('run_tests_upon_startup');
     $autotest->expects('run_tests_upon_change_or_creation');
@@ -61,17 +62,6 @@ describe 'the autotest' => sub {
 
     is $sum, 4;
   };
-
 };
 
 runtests unless caller;
-
-sub an_autotest { return App::autotest->new };
-
-sub an_autotest_that_just_checks_once_for_changed_or_new_files {
-  my $autotest=an_autotest();
-  $autotest->after_change_or_new_hook(sub { 1 });
-  return $autotest;
-};
-
-sub a_harness { return TAP::Harness->new };
