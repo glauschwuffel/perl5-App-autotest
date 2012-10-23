@@ -27,6 +27,9 @@ has after_change_or_new_hook => (is => 'rw',
   isa => 'CodeRef',
   default => sub { sub { 0 }});
 
+has harness_runtests_result => (is => 'rw',
+  isa => 'TAP::Parser::Aggregator');
+
 sub run {
   my ($self)=@_;
 
@@ -34,6 +37,28 @@ sub run {
   $self->run_tests_upon_change_or_creation;
 
   return 1;
+}
+
+sub number_of_test_programs {
+  my ($self) = @_;
+
+  return scalar @{$self->all_test_programs};
+}
+
+sub number_of_test_programs_run {
+  my ($self) = @_;
+
+  return scalar @{$self->test_programs_run};
+}
+
+sub test_programs_run {
+  my ($self) = @_;
+
+  my $result=$self->harness_runtests_result;
+  return [] unless $result;
+  my @parsers = $result->parsers;
+  # filter it to get the names
+  return \@parsers;
 }
 
 sub run_tests_upon_startup {
@@ -44,7 +69,7 @@ sub run_tests_upon_startup {
   # do we have test programs at all?
   return 1 unless @$all_test_programs;
 
-  my $result=$self->harness->runtests($all_test_programs);
+  $self->harness_runtests_result($self->harness->runtests(@$all_test_programs));
   return 1;
 }
 
@@ -52,7 +77,7 @@ sub run_tests_upon_change_or_creation {
   my ($self) = @_;
 
   while (1) {
-    $self->harness->runtests($self->changed_and_new_files);
+    $self->harness->runtests(@{$self->changed_and_new_files});
     last if $self->after_change_or_new_hook->();
   };
   return 1;
@@ -75,12 +100,10 @@ sub changed_and_new_files {
   my @files;
 
 sub all_test_programs {
-  my ($self, $directory)=@_;
-
-  die 'missing directory' unless $directory;
+  my ($self)=@_;
 
   @files=(); # throw away result of last call
-  find({wanted => \&_wanted, no_chdir => 1}, $directory);
+  find({wanted => \&_wanted, no_chdir => 1}, './'.$self->test_directory);
 
   return \@files;
 };
