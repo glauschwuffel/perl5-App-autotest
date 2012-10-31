@@ -8,17 +8,6 @@ describe 'the autotest' => sub {
     my $autotest = an_autotest();
     my $harness  = a_harness();
 
-# The following test fails with:
-#   Failed test 'the autotest should run all the tests upon startup' by dying:
-#     Can't use an undefined value as an ARRAY reference at .../lib/App/autotest.pm line 45.
-#  it 'should run all the tests upon startup' => sub {
-#    $harness->expects('runtests');
-#    $autotest->harness($harness);
-#
-#    $autotest->expects('all_test_programs');
-#    ok $autotest->run_tests_upon_startup;
-#  };
-
     it 'should run all test programs upon startup' => sub {
         $autotest->stubs( all_test_programs => SOME_TEST_PROGRAMS );
         $autotest->stubs( test_programs_run => SOME_TEST_PROGRAMS );
