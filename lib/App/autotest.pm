@@ -1,5 +1,7 @@
 package App::autotest;
 
+# ABSTRACT: main package for the autotest tool
+
 use strict;
 use warnings;
 
@@ -126,6 +128,7 @@ sub changed_and_new_files {
     sub _wanted {
         my $cwd  = getcwd();
         my $name = $File::Find::name;
+
         push @files, File::Spec->catfile( $cwd, $name ) if $name =~ m{\.t$};
     }
 
@@ -133,7 +136,7 @@ sub changed_and_new_files {
 
 sub _default_harness {
     my $args = {
-        verbosity => 1,
+        verbosity => -3,
         lib       => [ 'lib', 'blib/lib', 'blib/arch' ],
     };
     return TAP::Harness->new($args);
