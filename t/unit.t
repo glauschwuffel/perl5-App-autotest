@@ -1,7 +1,8 @@
 use Test::Spec;
 use File::Basename qw(dirname);
 
-BEGIN { require File::Spec->catfile( dirname(__FILE__), 'spec_helper.pl' ) }
+# spec_helper doesn't work for constants
+BEGIN { require File::Spec->catfile( dirname(__FILE__), 'helper.pm' ) }
 
 describe 'the autotest class' => sub {
     my $autotest = an_autotest();
