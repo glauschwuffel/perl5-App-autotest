@@ -68,8 +68,6 @@ sub run {
 
     $self->run_tests_upon_startup;
     $self->run_tests_upon_change_or_creation;
-
-    return 1;
 }
 
 sub number_of_test_programs {
@@ -100,24 +98,14 @@ sub run_tests_upon_startup {
 
     my $all_test_programs = $self->all_test_programs( $self->test_directory );
 
-    # do we have test programs at all?
-    return 1 unless @$all_test_programs;
-
-    $self->harness_runtests_result(
-        $self->harness->runtests(@$all_test_programs) );
-    return 1;
+    $self->run_tests(@$all_test_programs);
 }
 
 sub run_tests_upon_change_or_creation {
     my ($self) = @_;
 
     while (1) {
-        # remember if we had failures
-        $self->last_run_had_failures($self->this_run_had_failures);
-
-        # run tests
-        $self->harness->runtests( @{ $self->changed_and_new_files } );
-        print 'All tests are green' if $self->should_indicate_all_green;
+        $self->run_tests( @{ $self->changed_and_new_files } );
 
         last if $self->after_change_or_new_hook->();
     }
@@ -157,20 +145,6 @@ sub changed_and_new_files {
         push @files, File::Spec->catfile( $cwd, $name ) if $name =~ m{\.t$};
     }
 
-}
-
-sub should_indicate_all_green {
-    my ($self)=@_;
-
-    # We won't go all-green if we had failures on this run.
-    return if $self->this_run_had_failures;
-
-    # So this run had no failures. We won't indicate all-green if
-    # this was the case in the last run, too.
-    return unless $self->last_run_had_failures;
-
-    # Yay, all-green!
-    return 1;
 }
 
 sub run_tests {

@@ -20,16 +20,6 @@ has result => (
   isa => 'App::autotest::Test::Runner::Result'
 );
 
-has last_run_had_failures => (
-  is  => 'rw',
-  isa => 'Bool'
-);
-
-has this_run_had_failures => (
-  is  => 'rw',
-  isa => 'Bool'
-);
-
 sub run {
   my ( $self, @tests ) = @_;
 
