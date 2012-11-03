@@ -39,7 +39,8 @@ describe 'the method' => sub {
             my $cwd = getcwd();
             my @list =
               map { File::Spec->catfile( $cwd, $_ ) }
-              ( 't/t/1.t', 't/t/2.t', 't/t/3.t', 't/t/failing.t' );
+              ( 't/t/1.t', 't/t/2.t', 't/t/3.t',
+                't/t/failing.t', 't/t/succeeding.t' );
 
             eq_or_diff( $autotest->all_test_programs, \@list );
         };

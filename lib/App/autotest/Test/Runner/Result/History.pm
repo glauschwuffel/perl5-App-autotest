@@ -21,10 +21,13 @@ sub perpetuate {
 sub tests_are_green_again {
   my ( $self ) = @_;
 
-  my $was_bad=$self->last_result->has_failures;
-  my $is_good=not $self->current_result->has_failures;
+  # we can't claim 'again' if we have no last result
+  return unless $self->last_result;
 
-  return $was_bad && $is_good;
+  my $was_red=$self->last_result->has_failures;
+  my $is_green=not $self->current_result->has_failures;
+
+  return $was_red && $is_green;
 }
 
 1;

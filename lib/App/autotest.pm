@@ -12,6 +12,9 @@ use Cwd;
 use File::ChangeNotify;
 use TAP::Harness;
 
+use App::autotest::Test::Runner;
+use App::autotest::Test::Runner::Result::History;
+
 has harness => (
     is      => 'rw',
     isa     => 'TAP::Harness',
@@ -53,6 +56,12 @@ has this_run_had_failures => (
     is  => 'rw',
     isa => 'Bool'
 );
+
+has history => ( is => 'rw',
+    default => sub { App::autotest::Test::Runner::Result::History->new } );
+
+has test_runner => ( is => 'rw',
+    default => sub { App::autotest::Test::Runner->new });
 
 sub run {
     my ($self) = @_;
@@ -167,8 +176,12 @@ sub should_indicate_all_green {
 sub run_tests {
     my ($self, @tests)=@_;
 
-    my $result=$self->harness->runtests(@tests);
-    $self->harness_runtests_result($result);
+    my $result=$self->test_runner->run(@tests);
+    $self->history->perpetuate($result);
+
+    if ($self->history->tests_are_green_again) {
+        print "All tests are green again\n";
+    }
 }
 
 =head1 INTERNAL METHODS

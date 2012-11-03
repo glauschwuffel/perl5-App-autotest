@@ -34,6 +34,17 @@ describe 'a test runner result history' => sub {
     );
     ok $history->tests_are_green_again;
   };
+
+  it 'does not say tests are green again if we have no last result' => sub {
+    my $a_result_without_failures=a_result();
+    $a_result_without_failures->stubs(has_failures => 0);
+
+    my $history = a_history(
+      current_result => $a_result_without_failures
+    );
+
+    ok not $history->tests_are_green_again;
+  };
 };
 
 sub a_history { App::autotest::Test::Runner::Result::History->new(@_) }
