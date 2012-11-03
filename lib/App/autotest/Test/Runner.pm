@@ -15,7 +15,7 @@ has harness => (
   default => sub { _default_harness() }
 );
 
-has harness_runtests_result => (
+has result => (
   is  => 'rw',
   isa => 'App::autotest::Test::Runner::Result'
 );
@@ -36,13 +36,13 @@ sub run {
   my $harness_result = $self->harness->runtests(@tests);
   my $result =
     App::autotest::Test::Runner::Result->new( harness_result => $harness_result );
-  $self->harness_runtests_result($result);
+  $self->result($result);
 }
 
 sub had_failures {
   my ($self)=@_;
 
-  return $self->harness_runtests_result->had_failures;
+  return $self->result->has_failures;
 }
 
 =head1 INTERNAL METHODS
