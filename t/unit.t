@@ -102,6 +102,20 @@ describe 'the method' => sub {
             is $n, scalar @{ (SOME_TEST_PROGRAMS) };
         };
     };
+
+    xdescribe 'run_tests' => sub {
+        it 'stores the test results' => sub {
+            my $result=a_tap_parser_aggregator();
+            my $harness=a_harness();
+            $harness->stubs(runtests => $result);
+            my $autotest=an_autotest();
+            $autotest->harness($harness);
+            
+            isnt $autotest->harness_runtests_result, $result;
+            $autotest->run_tests(SOME_TEST_PROGRAMS);
+            is $autotest->harness_runtests_result, $result;
+        };
+    };
 };
 
 runtests unless caller;

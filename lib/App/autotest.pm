@@ -44,6 +44,16 @@ has harness_runtests_result => (
     isa => 'TAP::Parser::Aggregator'
 );
 
+has last_run_had_failures => (
+    is  => 'rw',
+    isa => 'Bool'
+);
+
+has this_run_had_failures => (
+    is  => 'rw',
+    isa => 'Bool'
+);
+
 sub run {
     my ($self) = @_;
 
@@ -93,7 +103,13 @@ sub run_tests_upon_change_or_creation {
     my ($self) = @_;
 
     while (1) {
+        # remember if we had failures
+        $self->last_run_had_failures($self->this_run_had_failures);
+
+        # run tests
         $self->harness->runtests( @{ $self->changed_and_new_files } );
+        print 'All tests are green' if $self->should_indicate_all_green;
+
         last if $self->after_change_or_new_hook->();
     }
     return 1;
@@ -133,6 +149,31 @@ sub changed_and_new_files {
     }
 
 }
+
+sub should_indicate_all_green {
+    my ($self)=@_;
+
+    # We won't go all-green if we had failures on this run.
+    return if $self->this_run_had_failures;
+
+    # So this run had no failures. We won't indicate all-green if
+    # this was the case in the last run, too.
+    return unless $self->last_run_had_failures;
+
+    # Yay, all-green!
+    return 1;
+}
+
+sub run_tests {
+    my ($self, @tests)=@_;
+
+    my $result=$self->harness->runtests(@tests);
+    $self->harness_runtests_result($result);
+}
+
+=head1 INTERNAL METHODS
+
+=cut
 
 sub _default_harness {
     my $args = {
