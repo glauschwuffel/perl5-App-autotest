@@ -1,0 +1,10 @@
+{{$NEXT}}
+
+  [ENHANCEMENTS]
+
+  When the last run was red and the current run is green we're told that
+  things just got better.
+
+0.001
+
+initial version
