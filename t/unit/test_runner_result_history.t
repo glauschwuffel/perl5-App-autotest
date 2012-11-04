@@ -21,7 +21,7 @@ describe 'a test runner result history' => sub {
     is $history->current_result, $new_result;
   };
 
-  it 'tells if tests are green again' => sub {
+  it 'tells if things just got better' => sub {
     my $a_result_with_failures=a_result();
     $a_result_with_failures->stubs(has_failures => 1);
 
@@ -32,10 +32,10 @@ describe 'a test runner result history' => sub {
       last_result    => $a_result_with_failures,
       current_result => $a_result_without_failures
     );
-    ok $history->tests_are_green_again;
+    ok $history->things_just_got_better;
   };
 
-  it 'does not say tests are green again if we have no last result' => sub {
+  it 'does not claim thing got better if we have no last result' => sub {
     my $a_result_without_failures=a_result();
     $a_result_without_failures->stubs(has_failures => 0);
 
@@ -43,7 +43,7 @@ describe 'a test runner result history' => sub {
       current_result => $a_result_without_failures
     );
 
-    ok not $history->tests_are_green_again;
+    ok not $history->things_just_got_better;
   };
 };
 

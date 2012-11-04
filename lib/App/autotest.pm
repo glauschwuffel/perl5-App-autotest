@@ -10,7 +10,6 @@ use File::Find;
 use File::Spec;
 use Cwd;
 use File::ChangeNotify;
-use TAP::Harness;
 
 use App::autotest::Test::Runner;
 use App::autotest::Test::Runner::Result::History;
@@ -109,8 +108,8 @@ sub run_tests {
     my $result=$self->test_runner->run(@tests);
     $self->history->perpetuate($result);
 
-    if ($self->history->tests_are_green_again) {
-        print "All tests are green again\n";
+    if ($self->history->things_just_got_better) {
+        print "Things just got better.\n";
     }
 }
 

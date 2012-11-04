@@ -32,9 +32,9 @@ describe 'an autotest' => sub {
       $autotest->run_tests;
     };
 
-    it 'asks the history if tests are green again' => sub {
+    it 'asks the history if things just got better' => sub {
       my $history = a_history();
-      $history->expects('tests_are_green_again');
+      $history->expects('things_just_got_better');
 
       my $autotest = an_autotest( history => $history );
 

@@ -18,15 +18,15 @@ describe 'an autotest' => sub {
     ok an_autotest()->test_directory;
   };
 
-  it 'prints message if tests are green again' => sub {
+  it 'prints message if things just got better' => sub {
 
     my $history = App::autotest::Test::Runner::Result::History->new();
-    $history->stubs( tests_are_green_again => 1 );
+    $history->stubs( things_just_got_better => 1 );
 
     my $autotest = App::autotest->new( history => $history );
 
     trap { $autotest->run_tests() };
-    is $trap->stdout, "All tests are green again\n";
+    is $trap->stdout, "Things just got better.\n";
   };
 
   describe 'calling run_tests_upon_startup' => sub {
