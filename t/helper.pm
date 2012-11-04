@@ -24,9 +24,9 @@ sub an_autotest_that_just_checks_once_for_changed_or_new_files {
 sub a_harness { return TAP::Harness->new }
 
 sub a_harness_not_running_the_tests {
-	my $harness=a_harness();
-	$harness->expects('runtests');
-	return $harness;
+  my $harness=a_harness();
+  $harness->expects('runtests');
+  return $harness;
 }
 
 sub a_tap_parser_aggregator { TAP::Parser::Aggregator->new };
