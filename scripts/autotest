@@ -25,6 +25,20 @@ since your tests are run automatically when you save them.
 
 Think "Continuous Testing".
 
+=head1 EXAMPLE
+
+Go to the directory where your test directory C<t> can be found. Run C<autotest>
+in that directory. It runs all your test programs once when it's starting.
+
+If one of the existing test programs are modified they are run again. Additionally,
+test programs that are created are run as soon as they are found.
+Modifications and creations of test programs are usually found after one second. 
+
+Only failing tests are printed in the console.
+
+When the last run had failing tests and in the current run no test failed, you'll
+see a friendly message that things just got better.
+
 =head1 AUTHOR
 
 Gregor Goldbach <glauschwuffel@nomaden.org>
