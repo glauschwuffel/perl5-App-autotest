@@ -15,12 +15,6 @@ use TAP::Harness;
 use App::autotest::Test::Runner;
 use App::autotest::Test::Runner::Result::History;
 
-has harness => (
-    is      => 'rw',
-    isa     => 'TAP::Harness',
-    default => sub { _default_harness() }
-);
-
 has test_directory => ( is => 'rw', isa => 'Str', default => 't' );
 
 has watcher => (
@@ -42,21 +36,6 @@ has after_change_or_new_hook => (
     }
 );
 
-has harness_runtests_result => (
-    is  => 'rw',
-    isa => 'TAP::Parser::Aggregator'
-);
-
-has last_run_had_failures => (
-    is  => 'rw',
-    isa => 'Bool'
-);
-
-has this_run_had_failures => (
-    is  => 'rw',
-    isa => 'Bool'
-);
-
 has history => ( is => 'rw',
     default => sub { App::autotest::Test::Runner::Result::History->new } );
 
@@ -68,29 +47,6 @@ sub run {
 
     $self->run_tests_upon_startup;
     $self->run_tests_upon_change_or_creation;
-}
-
-sub number_of_test_programs {
-    my ($self) = @_;
-
-    return scalar @{ $self->all_test_programs };
-}
-
-sub number_of_test_programs_run {
-    my ($self) = @_;
-
-    return scalar @{ $self->test_programs_run };
-}
-
-sub test_programs_run {
-    my ($self) = @_;
-
-    my $result = $self->harness_runtests_result;
-    return [] unless $result;
-    my @parsers = $result->parsers;
-
-    # filter it to get the names
-    return \@parsers;
 }
 
 sub run_tests_upon_startup {
@@ -156,18 +112,6 @@ sub run_tests {
     if ($self->history->tests_are_green_again) {
         print "All tests are green again\n";
     }
-}
-
-=head1 INTERNAL METHODS
-
-=cut
-
-sub _default_harness {
-    my $args = {
-        verbosity => -3,
-        lib       => [ 'lib', 'blib/lib', 'blib/arch' ],
-    };
-    return TAP::Harness->new($args);
 }
 
 1;
