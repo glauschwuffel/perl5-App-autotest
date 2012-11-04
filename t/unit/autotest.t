@@ -5,10 +5,10 @@ use App::autotest::Test::Runner::Result::History;
 
 use Test::Differences;
 use Cwd;
-use constant TEST_PROGRAMS_DIRECTORY => 't/t';
+use constant TEST_PROGRAMS_DIRECTORY => 'data/t';
 
-use constant A_TEST_PROGRAM       => 't/t/1.t';
-use constant ANOTHER_TEST_PROGRAM => 't/t/2.t';
+use constant A_TEST_PROGRAM       => 'data/t/1.t';
+use constant ANOTHER_TEST_PROGRAM => 'data/t/2.t';
 use constant SOME_TEST_PROGRAMS   => [ A_TEST_PROGRAM, ANOTHER_TEST_PROGRAM ];
 
 use constant AN_AFTER_CHANGE_OR_NEW_HOOK_THAT_EXISTS_IMMEDIATELY => sub { 1 };
@@ -25,8 +25,8 @@ describe 'an autotest' => sub {
 
     my $autotest = App::autotest->new( history => $history );
 
-    trap { $autotest->run_tests() };
-    is $trap->stdout, "Things just got better.\n";
+    $autotest->expects('print')->with("Things just got better.\n");
+    $autotest->run_tests(ANOTHER_TEST_PROGRAM);
   };
 
   describe 'calling run_tests_upon_startup' => sub {
@@ -65,8 +65,8 @@ describe 'an autotest' => sub {
       my $cwd = getcwd();
       my @list =
         map { File::Spec->catfile( $cwd, $_ ) }
-        ( 't/t/1.t', 't/t/2.t', 't/t/3.t',
-        't/t/failing.t', 't/t/succeeding.t' );
+        ( 'data/t/1.t', 'data/t/2.t', 'data/t/3.t',
+        'data/t/failing.t', 'data/t/succeeding.t' );
 
       eq_or_diff( $autotest->all_test_programs, \@list );
     };

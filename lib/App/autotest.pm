@@ -109,8 +109,13 @@ sub run_tests {
     $self->history->perpetuate($result);
 
     if ($self->history->things_just_got_better) {
-        print "Things just got better.\n";
+        $self->print("Things just got better.\n");
     }
+}
+
+sub print {
+    my ($self, @rest)=@_;
+    print @rest;
 }
 
 1;
