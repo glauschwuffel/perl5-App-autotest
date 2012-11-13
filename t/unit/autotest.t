@@ -68,7 +68,8 @@ describe 'an autotest' => sub {
         ( 'data/t/1.t', 'data/t/2.t', 'data/t/3.t',
         'data/t/failing.t', 'data/t/succeeding.t' );
 
-      eq_or_diff( $autotest->all_test_programs, \@list );
+      my $result=$autotest->all_test_programs;
+      eq_or_diff( [sort @$result], [sort @list] );
     };
   };
 
