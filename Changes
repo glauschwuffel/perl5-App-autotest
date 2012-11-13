@@ -1,5 +1,15 @@
 {{$NEXT}}
 
+  [BUGS]
+
+  Corrected a minor bug in a test: I guessed the order of directory entries.
+  Thanks to CPAN Testers this was caught.
+
+  The POD for autotest contained duplicate entries since I typed (manually)
+  what Dist::Zilla adds (automatically).
+
+0.002
+
   [ENHANCEMENTS]
 
   When the last run was red and the current run is green we're told that
