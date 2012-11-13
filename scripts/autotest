@@ -39,10 +39,6 @@ Only failing tests are printed in the console.
 When the last run had failing tests and in the current run no test failed, you'll
 see a friendly message that things just got better.
 
-=head1 AUTHOR
-
-Gregor Goldbach <glauschwuffel@nomaden.org>
-
 =head1 CONTRIBUTING
 
 The source code for C<autotest> lives on github:
@@ -60,16 +56,5 @@ Please report any bugs or feature requests to the issues list at Github:
 
 L<Test::Continuous> has far more features. It runs the tests by running C<prove>
 in an extra process; C<autotest> runs the tests within the same process via L<TAP::Harness>.
-
-=head1 VERSION
-
-0.001
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is copyright (c) 2012 by Gregor Goldbach.
-
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
 
 =cut
