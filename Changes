@@ -2,6 +2,13 @@
 
   [BUGS]
 
+  Updated dist.ini: We need a minimum version 0.46 Test::Spec since we use
+  the method "with" which is introduced in that version.
+
+0.003     2012-11-13 22:08:29 Europe/Berlin
+
+  [BUGS]
+
   Corrected a minor bug in a test: I guessed the order of directory entries.
   Thanks to CPAN Testers this was caught.
 
