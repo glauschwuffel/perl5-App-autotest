@@ -10,6 +10,7 @@ use File::Find;
 use File::Spec;
 use Cwd;
 use File::ChangeNotify;
+use List::MoreUtils;
 
 use App::autotest::Test::Runner;
 use App::autotest::Test::Runner::Result::History;
@@ -21,8 +22,8 @@ has watcher => (
     isa     => 'File::ChangeNotify::Watcher',
     default => sub {
         File::ChangeNotify->instantiate_watcher(
-            directories => ['t'],
-            filter      => qr/\.t$/
+            directories => ['t', 'lib'],
+            filter      => qr/(?:\.t|\.pm)$/,
         );
     }
 );
@@ -60,11 +61,80 @@ sub run_tests_upon_change_or_creation {
     my ($self) = @_;
 
     while (1) {
-        $self->run_tests( @{ $self->changed_and_new_files } );
+
+        my $test_files = $self->pm_to_t( $self->changed_and_new_files );
+        next unless @$test_files;
+
+        $self->run_tests( @$test_files );
 
         last if $self->after_change_or_new_hook->();
     }
     return 1;
+}
+
+sub pm_to_t {
+    my ($self, $change_files) = @_;
+    
+    my $all_test_programs  = $self->all_test_programs( $self->test_directory );
+    my @all_test_parts_map = map { +{ path => $_, parts => $self->break_path($_) } } @$all_test_programs;
+
+    my @test_paths;
+
+    foreach ( @$change_files ) {
+
+        if ( $_ =~ /\.t$/ ) {
+            push @test_paths, $_;
+            next;
+        }
+
+        my $test_path = $self->find_max_rate_of_concordance($self->break_path($_), \@all_test_parts_map);
+
+        if (defined $test_path) {
+            push @test_paths, $test_path;
+        }
+    }
+
+    return \@test_paths;
+}
+
+sub find_max_rate_of_concordance {
+    my ($self, $file_parts, $all_test_programs) = @_;
+
+    my @sorted_test_data = sort { $a->{rate} <=> $b->{rate} }
+                           map  {
+                                   +{
+                                       path => $_->{path}, 
+                                       rate => $self->calc_rate_of_concordance($file_parts, $_->{parts}) 
+                                    }
+                                }
+                                @$all_test_programs;
+
+    return undef unless @sorted_test_data;
+
+    my $max_data = $sorted_test_data[-1];
+
+    return $max_data->{rate} == 0 ? undef : $max_data->{path};
+}
+
+sub calc_rate_of_concordance {
+    my ($self, $target_parts, $cmp_parts) = @_;
+
+    return 0 unless ( @$target_parts );
+
+    my %target_map = map { $_ => 1 }  @$target_parts;
+
+    foreach ( @$cmp_parts ) {
+        $target_map{$_}++;
+    }
+
+    return scalar( grep { $_ >= 2 } values %target_map ) / scalar @$target_parts;
+}
+
+sub break_path {
+    my ($self, $path) = @_;
+
+    (my $lc_path = $path) =~ s/([A-Z])/_\l$1/g;
+    return [ List::MoreUtils::uniq( split(qr/[\\\/\.\-_]/, $lc_path) ) ];
 }
 
 sub changed_and_new_files {
