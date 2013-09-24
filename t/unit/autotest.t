@@ -1,4 +1,5 @@
 use Test::Spec;
+use Test::Mock::Guard qw(mock_guard);
 
 use App::autotest;
 use App::autotest::Test::Runner::Result::History;
@@ -92,6 +93,37 @@ describe 'an autotest' => sub {
 
       my @got = $autotest->changed_and_new_files;
       eq_or_diff \@got, \@expected;
+    };
+  };
+
+  describe 'pm_to_t' => sub {
+    my $autotest = an_autotest();
+
+    it 'calc rate of concordance test' => sub {
+        eq_or_diff $autotest->calc_rate_of_concordance(['a', 'b', 'c', 'd'], ['a', 'd', 'f']), 0.5;
+    };
+
+    it 'calc rate of concordance non t test' => sub {
+        eq_or_diff $autotest->calc_rate_of_concordance(['a', 'b', 'c', 'd'], ['g', 'z']), 0;
+    };
+
+    it 'calc rate of concordance non pm  test' => sub {
+        eq_or_diff $autotest->calc_rate_of_concordance([], ['g', 'z']), 0;
+    };
+
+    it 'pm_to_t one hit' => sub {
+
+        my $guard = mock_guard( 'App::autotest', { all_test_programs => sub { ['t/abcd.t', 't/ab_cd.t', 't/abcd_ef_gh.t'] } } );
+
+        eq_or_diff $autotest->pm_to_t(['lib/abCd/efgh.pm']), ['t/ab_cd.t'];
+        
+    };
+
+    it 'pm_to_t many hit' => sub {
+
+        my $guard = mock_guard( 'App::autotest', { all_test_programs => sub { ['t/abcd.t', 't/ab_cd.t', 't/abcd_ef_gh.t', 't/aaa.t'] } } );
+
+        eq_or_diff $autotest->pm_to_t(['lib/abCd/efgh.pm', 'lib/aaa/test.pm']), ['t/ab_cd.t', 't/aaa.t'];
     };
   };
 
