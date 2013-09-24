@@ -1,5 +1,17 @@
 {{$NEXT}}
 
+  [ENHANCEMENTS]
+
+  Tests are run if modules are changed.
+  Thanks, totofuga!
+
+  [BUGS]
+
+  Updated dist.ini: MetaResources was misplaced so the meta information
+  wasn't collected in META.yml
+
+0.004     2012-11-18 01:03:13 Europe/Berlin
+
   [BUGS]
 
   Updated dist.ini: We need a minimum version 0.46 Test::Spec since we use
