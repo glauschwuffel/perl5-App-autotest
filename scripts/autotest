@@ -1,4 +1,4 @@
-#! /usr/bin/env perl
+#! perl
 # ABSTRACT: run Perl5 test programs as soon as they are modified or created
 # PODNAME: autotest
 
