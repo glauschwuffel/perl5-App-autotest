@@ -2,8 +2,15 @@
 
   [ENHANCEMENTS]
 
-  Tests are run if modules are changed.
+  Tests are run if the modules they are testing are changed. Alas, there is no
+  documentation for this feature yet, read the tests to see how to use it.
   Thanks, totofuga!
+
+  Test::Differences changed the output of eq_or_diff so two test cases failed. Changed
+  to the new output.
+
+  Minor changes to some modules so perlcritic and dzil play along.
+  (https://github.com/rjbs/dist-zilla/pull/168 isn't merged yet)
 
   [BUGS]
 
