@@ -1,9 +1,9 @@
+use strict;
+use warnings;
+
 package App::autotest;
 
 # ABSTRACT: main package for the autotest tool
-
-use strict;
-use warnings;
 
 use Moose;
 use File::Find;
@@ -109,7 +109,7 @@ sub find_max_rate_of_concordance {
                                 }
                                 @$all_test_programs;
 
-    return undef unless @sorted_test_data;
+    return unless @sorted_test_data;
 
     my $max_data = $sorted_test_data[-1];
 

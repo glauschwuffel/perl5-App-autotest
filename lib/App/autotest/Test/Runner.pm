@@ -1,9 +1,9 @@
+use strict;
+use warnings;
+
 package App::autotest::Test::Runner;
 
 # ABSTRACT: runs tests
-
-use strict;
-use warnings;
 
 use Moose;
 use TAP::Harness;

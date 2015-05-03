@@ -1,9 +1,9 @@
+use strict;
+use warnings;
+
 package App::autotest::Test::Runner::Result::History;
 
 # ABSTRACT: collects test runner results
-
-use strict;
-use warnings;
 
 use Moose;
 use App::autotest::Test::Runner::Result;
