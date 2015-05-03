@@ -84,7 +84,7 @@ describe 'an autotest' => sub {
       $autotest->watcher->stubs( wait_for_events => ($event) );
 
       my @got = $autotest->changed_and_new_files;
-      eq_or_diff \@got, \@expected;
+      eq_or_diff \@got, [\@expected];
     };
 
     it 'should find new files' => sub {
@@ -92,7 +92,7 @@ describe 'an autotest' => sub {
       $autotest->watcher->stubs( wait_for_events => ($event) );
 
       my @got = $autotest->changed_and_new_files;
-      eq_or_diff \@got, \@expected;
+      eq_or_diff \@got, [\@expected];
     };
   };
 
