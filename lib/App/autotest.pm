@@ -175,7 +175,9 @@ sub changed_and_new_files {
 sub run_tests {
     my ($self, @tests)=@_;
 
-    my $result=$self->test_runner->run(@tests);
+    my @exist = grep { if(-e $_) { $_ } } @tests;
+    
+    my $result=$self->test_runner->run(@exist);
     $self->history->perpetuate($result);
 
     if ($self->history->things_just_got_better) {
